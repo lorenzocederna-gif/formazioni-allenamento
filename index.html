@@ -311,6 +311,18 @@
       <div class="hint" id="bulkResult"></div>
     </details>
     <details class="card">
+      <summary>Backup e trasferimento</summary>
+      <div class="hint">Copia la configurazione (giocatori e ruoli) e incollala su un altro dispositivo, o tienila da parte come backup. Presenze e formazioni del giorno non sono incluse.</div>
+      <div class="toolbar" style="margin:0 0 8px">
+        <button class="btn primary small" id="btnExportCfg">Copia configurazione</button>
+      </div>
+      <textarea id="cfgText" placeholder="Incolla qui la configurazione copiata dall'altro dispositivo"></textarea>
+      <div class="toolbar" style="margin-top:8px">
+        <button class="btn small" id="btnImportCfg">Carica configurazione</button>
+      </div>
+      <div class="hint" id="cfgResult"></div>
+    </details>
+    <details class="card">
       <summary>Rosa di prova</summary>
       <div class="hint">Carica 28 nomi inventati con le gerarchie gia compilate, per provare la app. Sostituisce la rosa attuale.</div>
       <div class="toolbar" style="margin:0">
@@ -1268,6 +1280,56 @@ $("#btnBulkAdd").addEventListener("click",function(){
   renderPlayers();
 });
 $("#btnCopiaElenco").addEventListener("click",function(){ copyText(players.map(function(p){ return p.nome; }).join("\n")); });
+
+/* ---- backup e trasferimento fra dispositivi ---- */
+function exportConfig(){
+  var data={v:3, players:players.map(function(p){ return {i:p.id, n:p.nome}; }), ranks:{}};
+  ROLES.forEach(function(r){ if(ranks[r.k].length) data.ranks[r.k]=ranks[r.k].slice(); });
+  return JSON.stringify(data);
+}
+function importConfig(txt){
+  var d=JSON.parse(txt);                                   // se non e valido lancia un errore
+  if(!d || !d.players || !d.players.length) throw new Error("nessun giocatore nel testo");
+  var np=[], seen={};
+  d.players.forEach(function(x){
+    var nome=(x.n||x.nome||"").toString().trim();
+    var id=x.i||x.id;
+    if(!nome || !id || seen[id]) return;
+    seen[id]=1; np.push({id:id, nome:nome});
+  });
+  if(!np.length) throw new Error("nessun giocatore valido");
+  var nr={};
+  ROLES.forEach(function(r){
+    var src=(d.ranks&&d.ranks[r.k])||[];
+    // tiene solo i riferimenti a giocatori esistenti, senza ripetizioni
+    var out=[];
+    src.forEach(function(id){ if(seen[id] && out.indexOf(id)<0) out.push(id); });
+    nr[r.k]=out;
+  });
+  players=np; ranks=nr;
+  pres={}; assign={}; dual={}; subs={}; pos={};
+  save(LS.players,players); save(LS.ranks,ranks); save(LS.pres,pres);
+  save(LS.assign,assign); save(LS.dual,dual); save(LS.subs,subs); save(LS.pos,pos);
+  var conRuolo=players.filter(function(p){ return rolesOf(p).length; }).length;
+  return players.length+" giocatori caricati, "+conRuolo+" con ruolo";
+}
+$("#btnExportCfg").addEventListener("click",function(){
+  if(!players.length){ toast("Non c'e niente da copiare"); return; }
+  copyText(exportConfig());
+  $("#cfgResult").textContent="Configurazione copiata: "+players.length+" giocatori. Incollala in una nota o in un messaggio, poi caricala sull'altro dispositivo.";
+});
+$("#btnImportCfg").addEventListener("click",function(){
+  var txt=$("#cfgText").value.trim();
+  if(!txt){ $("#cfgResult").textContent="Incolla prima il testo della configurazione."; return; }
+  if(players.length && !confirm("Sostituire rosa e ruoli attuali con quelli incollati?")) return;
+  try{
+    var msg=importConfig(txt);
+    $("#cfgText").value=""; $("#cfgResult").textContent=msg;
+    renderPlayers(); toast(msg);
+  }catch(e){
+    $("#cfgResult").textContent="Testo non valido ("+e.message+"). Copialo di nuovo per intero dall'altro dispositivo.";
+  }
+});
 
 /* carica la rosa di prova con le sue gerarchie */
 function loadDemo(markPresent){

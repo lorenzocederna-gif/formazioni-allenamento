@@ -237,7 +237,7 @@
     <button data-tab="formazioni">Lista</button>
     <button data-tab="campo">Campo</button>
     <button data-tab="giocatori">Giocatori</button>
-    <button data-tab="gerarchie">Gerarchie</button>
+    <button data-tab="gerarchie">Ruoli</button>
   </nav>
 </header>
 
@@ -320,7 +320,7 @@
     <div class="toolbar">
       <span class="count" id="rosaCount"></span>
       <span class="grow"></span>
-      <span class="hint" style="margin:0">I ruoli si assegnano nel tab Gerarchie</span>
+      <span class="hint" style="margin:0">I ruoli si assegnano nel tab Ruoli</span>
     </div>
     <div id="rosaList" class="grow-list"></div>
   </section>
@@ -331,7 +331,7 @@
     <div class="toolbar">
       <span class="count" id="gerCount"></span>
       <span class="grow"></span>
-      <button class="btn small" id="btnPulisciGer">Svuota gerarchie</button>
+      <button class="btn small" id="btnPulisciGer">Svuota ruoli</button>
     </div>
     <div id="gerList"></div>
   </section>
@@ -498,7 +498,7 @@ function updateHeader(){
 function renderPres(){
   var wrap=$("#presList"); wrap.innerHTML="";
   if(!players.length){
-    wrap.appendChild(el("div","empty-state","Nessun giocatore inserito. Vai nel tab Giocatori per creare la rosa, poi nel tab Gerarchie per definire i ruoli."));
+    wrap.appendChild(el("div","empty-state","Nessun giocatore inserito. Vai nel tab Giocatori per creare la rosa, poi nel tab Ruoli per definire i ruoli."));
     $("#presCount").textContent=""; updateHeader(); return;
   }
   var q=norm(searchQ);
@@ -973,7 +973,6 @@ function renderTeams(){
 }
 
 /* ===================== VISTA CAMPO ===================== */
-function roleShort(k){ return (k&&ROLE_BY_K[k])?ROLE_BY_K[k].sh:"\u2014"; }
 
 function renderCampo(){
   clearCache();
@@ -1014,7 +1013,6 @@ function renderCampo(){
           b.appendChild(el("div","n",String(num)));
           var tx=el("div","tx");
           tx.appendChild(el("div","nm",s.p.nome+(dual[s.p.id]?" \u21c4":"")+(s.adapted?" *":"")));
-          tx.appendChild(el("div","rl",roleShort(s.k)));
           b.appendChild(tx);
           b.addEventListener("click",(function(pl){ return function(){ onTapPlayer(pl); }; })(s.p));
           fr.appendChild(b);
@@ -1023,7 +1021,6 @@ function renderCampo(){
           v.appendChild(el("div","n",String(num)));
           var tv=el("div","tx");
           tv.appendChild(el("div","nm", selectedId?"metti qui":"mancante"));
-          tv.appendChild(el("div","rl",roleShort(s.k)));
           v.appendChild(tv);
           v.addEventListener("click",(function(tt,n){ return function(){ placeSelected(tt,n); }; })(t,num));
           fr.appendChild(v);
@@ -1392,9 +1389,9 @@ function renderGer(){
   $("#gerCount").textContent=(players.length-missing.length)+"/"+players.length+" con ruolo \u00b7 "+poly+" polivalenti \u00b7 "+tot+" posizioni";
 }
 $("#btnPulisciGer").addEventListener("click",function(){
-  if(!confirm("Svuotare tutte le gerarchie? I giocatori restano, perdono solo ruoli e ordine.")) return;
+  if(!confirm("Svuotare tutti i ruoli? I giocatori restano, perdono solo ruolo e ordine.")) return;
   ROLES.forEach(function(r){ ranks[r.k]=[]; });
-  save(LS.ranks,ranks); renderGer(); toast("Gerarchie svuotate");
+  save(LS.ranks,ranks); renderGer(); toast("Ruoli svuotati");
 });
 
 /* ===================== AVVIO ===================== */

@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CUS Rugby">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#06324f">
+<title>CUS Milano Rugby &middot; Formazioni</title>
+<style>
+  :root{
+    --bg:#eef2f4; --card:#fff; --ink:#122026; --muted:#6a7b84; --line:#dce3e7;
+    --blue:#06324f; --blue2:#0d5a92; --green:#0e6b4f; --green2:#15976d;
+    --gold:#f2b230; --red:#b3261e;
+    --shadow:0 1px 3px rgba(10,40,60,.10);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px}
+  header{position:sticky;top:0;z-index:10;color:#fff;
+    background:linear-gradient(135deg,var(--blue) 0%,#0a4a6b 45%,var(--green) 100%);
+    padding:env(safe-area-inset-top) 0 0;box-shadow:0 2px 10px rgba(6,50,79,.25)}
+  .brand{display:flex;align-items:center;gap:10px;padding:11px 14px 9px}
+  .crest{width:34px;height:34px;flex:none;border-radius:50%;background:rgba(255,255,255,.14);
+    border:1.5px solid rgba(255,255,255,.5);display:grid;place-items:center;font-size:10px;font-weight:800;letter-spacing:.5px}
+  .brand .t1{font-size:15px;font-weight:700;letter-spacing:.06em;line-height:1.15;text-transform:uppercase}
+  .brand .t2{font-size:11.5px;opacity:.82;line-height:1.2}
+  .brand .right{margin-left:auto;text-align:right;font-size:11px;opacity:.9;line-height:1.3}
+  .brand .right b{display:block;font-size:14px}
+  .tabs{display:flex;background:rgba(0,0,0,.14)}
+  .tabs button{flex:1;background:transparent;border:0;color:#cfe0ea;padding:9px 0 10px;
+    font-size:11.5px;font-weight:600;border-bottom:3px solid transparent;white-space:nowrap}
+  .tabs button.active{color:#fff;border-bottom-color:var(--gold)}
+  main{padding:12px 12px calc(96px + env(safe-area-inset-bottom))}
+  section[hidden]{display:none}
+  button{font:inherit;cursor:pointer}
+  .btn{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:var(--ink);box-shadow:var(--shadow)}
+  .btn.primary{background:linear-gradient(135deg,var(--blue2),var(--green2));border:0;color:#fff;font-weight:700}
+  .btn.danger{color:var(--red);border-color:#edc9c6}
+  .btn.small{padding:6px 10px;font-size:12.5px;border-radius:8px}
+  .btn:disabled{opacity:.45}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .toolbar .grow{flex:1}
+  .count{font-weight:700;color:var(--blue2);font-size:13px}
+  input[type=text],input[type=number],input[type=search],select,textarea{font:inherit;border:1px solid var(--line);
+    border-radius:10px;padding:9px 10px;background:#fff;color:var(--ink);width:100%;-webkit-appearance:none;appearance:none}
+  select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+    background-position:calc(100% - 15px) 50%,calc(100% - 10px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:30px}
+  textarea{min-height:96px;resize:vertical}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px;margin-bottom:10px;box-shadow:var(--shadow)}
+  .grouph{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:15px 4px 6px;font-weight:700}
+  .grouph.first{margin-top:4px}
+  .hint{font-size:12px;color:var(--muted);margin:8px 2px;line-height:1.45}
+  .warn{background:#fff8e6;border:1px solid #f0dca6;color:#6b5312;border-radius:10px;padding:9px 11px;font-size:12.5px;margin-bottom:10px}
+  .empty-state{padding:34px 14px;text-align:center;color:var(--muted);line-height:1.5}
+  .prow{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;margin-bottom:6px;box-shadow:var(--shadow)}
+  .prow .chk{width:22px;height:22px;border-radius:6px;border:2px solid #a5b4bc;display:grid;place-items:center;flex:none;color:#fff;font-size:13px}
+  .prow.on{border-color:var(--green2);background:#edf9f3}
+  .prow.on .chk{background:var(--green2);border-color:var(--green2)}
+  .prow .nm{flex:1;font-weight:500}
+  .prow .meta{font-size:11.5px;color:var(--muted);text-align:right;line-height:1.3}
+  .rank{display:inline-block;min-width:24px;text-align:center;background:#e9eff3;border-radius:6px;
+    padding:2px 6px;font-size:11.5px;font-weight:700;color:var(--blue)}
+  .rank.r1{background:var(--gold);color:#4a3400}
+  .rank.none{background:#f2e6e6;color:#8a4b45}
+  .bottombar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+    padding:9px 12px calc(9px + env(safe-area-inset-bottom));z-index:9;box-shadow:0 -2px 10px rgba(10,40,60,.08)}
+  .bottombar .line{display:flex;gap:8px;align-items:center}
+  .bottombar .line+.line{margin-top:7px}
+  .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:1}
+  .seg button{flex:1;border:0;background:#fff;padding:9px 4px;font-size:12.5px;color:var(--muted);font-weight:600}
+  .seg button.active{background:linear-gradient(135deg,var(--blue2),var(--green2));color:#fff}
+  .seg.sm button{padding:7px 4px;font-size:12px}
+  .teams{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .teams.three{grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .team{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+  .team h2{margin:0;padding:8px 10px;font-size:13.5px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .team.A h2{background:linear-gradient(135deg,#0d5a92,#1272b8)}
+  .team.B h2{background:linear-gradient(135deg,#0e6b4f,#17a074)}
+  .team.C h2{background:linear-gradient(135deg,#6b4e0e,#a07d17)}
+  .team.N h2{background:#64757e}
+  .team h2 small{font-weight:400;font-size:11px;opacity:.92;display:block}
+  .team h2 .mv{background:rgba(255,255,255,.26);border:0;color:#fff;border-radius:6px;padding:4px 7px;font-size:11px;font-weight:600;flex:none}
+  .slot{display:flex;align-items:center;gap:5px;padding:7px 7px;border-bottom:1px solid #eef2f4;min-height:41px}
+  .slot:last-child{border-bottom:0}
+  .slot .num{width:17px;font-size:11px;color:var(--muted);text-align:right;flex:none;font-weight:600}
+  .slot .body{flex:1;min-width:0}
+  .slot .role{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;line-height:1.1}
+  .slot .name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .teams.three .slot .name{font-size:12px}
+  .slot.empty .name{color:#bcc7cd;font-weight:400}
+  .slot.empty.target{background:#eef7f1;box-shadow:inset 3px 0 0 var(--green2);cursor:pointer}
+  .slot.empty.target .name{color:var(--green2);font-weight:700}
+  .pchip.vacant.target .tx{background:#cdebdb}
+  .pchip.vacant.target .nm{color:var(--green);font-weight:700}
+  .pchip.vacant.target .n{background:var(--green2)}
+  .slot.player{cursor:pointer}
+  .slot.sel{background:#fff6e2;box-shadow:inset 0 0 0 2px var(--gold)}
+  .slot.adapted{background:#fff3c4;box-shadow:inset 3px 0 0 #e0a800}
+  .slot.adapted .name{color:#6b4e00;font-weight:700}
+  .slot.adapted .role{color:#8a6a1f}
+  .slot.dual .name{color:#7a1fa2}
+  .slot .lk{border:0;background:transparent;font-size:12px;padding:4px 1px;opacity:.3;flex:none}
+  .slot .lk.on{opacity:1}
+  .slot .pr{font-size:10px;color:var(--muted);flex:none;min-width:14px;text-align:right}
+  /* colonna del cambio */
+  .slothead{display:flex;align-items:center;gap:5px;padding:4px 7px;background:#f3f6f8;border-bottom:1px solid #e4eaee}
+  .slothead .sp{flex:1}
+  .slothead .hd{flex:none;width:72px;text-align:center;font-size:8.5px;font-weight:800;
+    letter-spacing:.07em;color:var(--muted);text-transform:uppercase}
+  .teams.three .slothead .hd{width:58px}
+  .slothead .lkspace{flex:none;width:16px}
+  .rsvbox{flex:none;width:72px}
+  .teams.three .rsvbox{width:58px}
+  select.rsv{width:100%;font-size:9.5px;padding:3px 4px;border-radius:7px;border:1px dashed #c3ccd2;
+    background:#fbfdfe;background-image:none;color:#92a2ab;text-align:center}
+  select.rsv.set{border-style:solid;border-color:var(--green2);background:#edf9f3;color:var(--green);font-weight:700}
+  .slot.extra .num{color:var(--gold)}
+  .holes{padding:7px 8px;font-size:10.5px;color:var(--muted);background:#f7f9fa;border-top:1px solid #eef2f4;line-height:1.35}
+  .holes b{color:#8a6a1f;font-weight:700}
+  .legend{display:flex;gap:10px;font-size:11px;color:var(--muted);margin:9px 3px 0;flex-wrap:wrap}
+  .legend b{font-weight:700}
+  .legend .lgy{background:#fff3c4;color:#6b4e00;border-radius:5px;padding:1px 6px;font-weight:600}
+  .grow-list .gr{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);
+    border-radius:10px;padding:8px 10px;margin-bottom:6px;box-shadow:var(--shadow)}
+  .grow-list .gr input{border:0;padding:4px 0;box-shadow:none;background:transparent}
+  .grow-list .gr .tag{font-size:11px;color:var(--muted);flex:none;max-width:44%;text-align:right;line-height:1.25}
+  .rolecard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 11px 11px;margin-bottom:10px;box-shadow:var(--shadow)}
+  .rolecard h3{margin:0 0 9px;font-size:13.5px;display:flex;align-items:center;gap:8px}
+  .rolecard h3 .shirt{width:22px;height:22px;flex:none;border-radius:50%;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--blue),var(--green));color:#fff;font-size:10.5px;font-weight:700}
+  .rolecard h3 .n{flex:1}
+  .rolecard h3 .cnt{font-size:11px;color:var(--muted);font-weight:400}
+  .pick{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+  .pick .lbl{flex:none;width:30px;font-size:11px;font-weight:700;color:var(--blue2);text-align:center;background:#e9eff3;border-radius:6px;padding:5px 0}
+  .pick .lbl.g{background:var(--gold);color:#4a3400}
+  .pick select{flex:1}
+  .pick .ic{flex:none;border:1px solid var(--line);background:#fff;border-radius:8px;width:30px;height:34px;
+    font-size:13px;color:var(--muted);padding:0;display:grid;place-items:center}
+  .pick .ic.del{color:var(--red);border-color:#edc9c6}
+  /* riserve */
+  .resrow{display:flex;gap:6px;align-items:center;background:#fff;border:1px solid var(--line);
+    border-radius:10px;padding:8px 9px;margin-bottom:6px;box-shadow:var(--shadow)}
+  .resrow .who{flex:1;min-width:0}
+  .resrow .who .nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .resrow .who .sub{font-size:10.5px;color:var(--muted)}
+  .resrow select{flex:1.1;font-size:12.5px;padding:7px 8px}
+  .resrow .arrow{flex:none;color:var(--muted);font-size:13px}
+  /* ---- vista campo ---- */
+  .pitchbox{margin-bottom:12px;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);background:#fff;border:1px solid var(--line)}
+  .pitchbox>h2{margin:0;padding:8px 11px;font-size:13.5px;color:#fff;display:flex;align-items:center;gap:8px}
+  .pitchbox.A>h2{background:linear-gradient(135deg,#0d5a92,#1272b8)}
+  .pitchbox.B>h2{background:linear-gradient(135deg,#0e6b4f,#17a074)}
+  .pitchbox.C>h2{background:linear-gradient(135deg,#6b4e0e,#a07d17)}
+  .pitchbox>h2 small{font-weight:400;font-size:11px;opacity:.9;margin-left:auto}
+  .pitch{position:relative;padding:12px 6px 14px;
+    background:
+      repeating-linear-gradient(180deg, rgba(255,255,255,.055) 0 2px, transparent 2px 64px),
+      linear-gradient(180deg,#0b3f66 0%,#073352 55%,#06283f 100%)}
+  .pitch .frow{display:flex;justify-content:center;align-items:flex-start;gap:5px;margin:0 0 11px;flex-wrap:nowrap}
+  .pitch .frow:last-child{margin-bottom:0}
+  .pchip{display:flex;align-items:stretch;border-radius:6px;overflow:hidden;
+    box-shadow:0 1px 4px rgba(0,0,0,.35);min-width:0;flex:0 1 auto;border:0;padding:0;background:none;text-align:left}
+  .pchip .n{background:#1565c0;color:#fff;font-size:10px;font-weight:800;padding:0 5px;display:grid;place-items:center;flex:none}
+  .pchip .tx{background:#f5f8fa;padding:3px 6px;min-width:0;flex:1 1 auto}
+  .pchip .nm{font-size:11.5px;font-weight:700;color:#0d2b3e;line-height:1.2;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pchip .rl{font-size:9px;color:#4e6775;text-transform:uppercase;letter-spacing:.01em;line-height:1.25;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pchip.sel{outline:2px solid var(--gold);outline-offset:1px}
+  /* cambi: sotto il campo su schermo stretto, in colonna a lato su schermo grande */
+  .pitchrow{display:flex;flex-direction:column;gap:10px}
+  .pitchmain{min-width:0}
+  .subcol{display:flex;flex-wrap:wrap;align-items:center;gap:5px;
+    border-top:1px dashed rgba(255,255,255,.32);padding-top:9px}
+  .subhead{font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+    color:rgba(255,255,255,.7);width:100%}
+  .subcol .pchip{flex:0 0 auto;max-width:46%}
+  @media (min-width:700px){
+    .pitchrow{flex-direction:row;align-items:flex-start;gap:12px}
+    .pitchmain{flex:1;max-width:620px;margin:0 auto}
+    .subcol{flex:none;width:136px;flex-direction:column;align-items:stretch;flex-wrap:nowrap;
+      border-top:0;border-left:1px dashed rgba(255,255,255,.32);padding-top:0;padding-left:11px}
+    .subhead{text-align:center}
+    .subcol .pchip{flex:0 0 auto;width:100%;max-width:100%}
+    .pitch{padding:16px 10px 18px}
+    .pitch .frow{gap:8px;margin-bottom:14px}
+    .pchip .n{font-size:11px;padding:0 7px}
+    .pchip .tx{padding:4px 8px}
+    .pchip .nm{font-size:13px}
+    .pchip .rl{font-size:9.5px}
+  }
+  .pchip.vacant .n{background:rgba(255,255,255,.22)}
+  .pchip.vacant .tx{background:rgba(255,255,255,.14)}
+  .pchip.vacant .nm{color:#dbe8f0;font-weight:500}
+  .pchip.vacant .rl{color:#a9c3d4}
+  .pitchfoot{padding:8px 11px;font-size:11px;color:var(--muted);background:#f7f9fa;border-top:1px solid #eef2f4;line-height:1.4}
+  /* ---- telefono: le squadre affiancate non ci stanno, si scorrono di lato ---- */
+  @media (max-width:559px){
+    .teams, .teams.three{display:flex;grid-template-columns:none;gap:8px;
+      overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;
+      padding-bottom:6px;scrollbar-width:none}
+    .teams::-webkit-scrollbar{display:none}
+    .teams .team{flex:0 0 87%;scroll-snap-align:center}
+    .teams.three .rsvbox, .rsvbox{width:76px}
+    .teams.three .slothead .hd, .slothead .hd{width:76px}
+    .slot .name{font-size:13.5px}
+    select.rsv{min-height:27px}
+    /* quattro giocatori in fila lascerebbero 8 caratteri per nome: meglio due coppie */
+    .pitch .frow{flex-wrap:wrap;row-gap:7px}
+    .pitch .frow.wide .pchip{flex:0 0 calc(50% - 3px)}
+    /* su iOS i campi di testo sotto i 16px fanno ingrandire la pagina da soli */
+    input[type=text],input[type=search],textarea{font-size:16px}
+  }
+  .toast{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);background:#122026;color:#fff;
+    padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20;max-width:85%;text-align:center}
+  .toast.show{opacity:1}
+  details summary{cursor:pointer;font-weight:700;padding:6px 0;font-size:13.5px}
+  .row{display:flex;gap:8px;align-items:center;margin:8px 0}
+  .row label{flex:1;font-size:13.5px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="crest">CUS</div>
+    <div>
+      <div class="t1">CUS Milano Rugby</div>
+      <div class="t2">Formazioni allenamento</div>
+    </div>
+    <div class="right" id="hdrInfo"></div>
+  </div>
+  <nav class="tabs">
+    <button data-tab="presenze" class="active">Presenze</button>
+    <button data-tab="formazioni">Lista</button>
+    <button data-tab="campo">Campo</button>
+    <button data-tab="giocatori">Giocatori</button>
+    <button data-tab="gerarchie">Gerarchie</button>
+  </nav>
+</header>
+
+<main>
+  <!-- PRESENZE -->
+  <section id="tab-presenze">
+    <div class="toolbar">
+      <span class="count" id="presCount"></span>
+      <span class="grow"></span>
+      <button class="btn small" id="btnTutti">Tutti</button>
+      <button class="btn small" id="btnNessuno">Nessuno</button>
+      <button class="btn small" id="btnIncolla">Incolla</button>
+    </div>
+    <div class="card" id="pasteBox" hidden>
+      <textarea id="pasteText" placeholder="Incolla i nomi dei presenti, uno per riga o separati da virgola. Basta anche solo il cognome."></textarea>
+      <div class="toolbar" style="margin-top:8px">
+        <button class="btn primary small" id="btnApplicaIncolla">Segna presenti</button>
+        <button class="btn small" id="btnChiudiIncolla">Chiudi</button>
+      </div>
+      <div class="hint" id="pasteResult"></div>
+    </div>
+    <input type="search" id="searchPres" placeholder="Cerca giocatore...">
+    <div id="presList"></div>
+  </section>
+
+  <!-- FORMAZIONI -->
+  <section id="tab-formazioni" hidden>
+    <div class="toolbar">
+      <button class="btn small" id="btnRigenera">&#8635; Rigenera</button>
+      <button class="btn small" id="btnCopia">Copia</button>
+      <button class="btn small" id="btnCondividi">Condividi</button>
+      <span class="grow"></span>
+      <button class="btn small danger" id="btnAnnullaSel" hidden>Annulla</button>
+    </div>
+    <div class="hint" id="selInfo"></div>
+    <div id="teamsWrap"></div>
+    <div class="legend" id="legend"></div>
+    <div id="bench"></div>
+  </section>
+
+  <!-- CAMPO -->
+  <section id="tab-campo" hidden>
+    <div class="toolbar">
+      <button class="btn small" id="btnRigenera2">&#8635; Rigenera</button>
+      <button class="btn small" id="btnCondividi2">Condividi</button>
+      <span class="grow"></span>
+      <button class="btn small danger" id="btnAnnullaSel2" hidden>Annulla</button>
+    </div>
+    <div class="hint" id="selInfo2"></div>
+    <div id="campoWrap"></div>
+  </section>
+
+  <!-- GIOCATORI -->
+  <section id="tab-giocatori" hidden>
+    <div class="card">
+      <div class="toolbar" style="margin:0">
+        <input type="text" id="newName" placeholder="Nome e cognome" style="flex:1;min-width:150px">
+        <button class="btn primary small" id="btnAddPlayer">Aggiungi</button>
+      </div>
+    </div>
+    <details class="card">
+      <summary>Aggiungi molti nomi in una volta</summary>
+      <div class="hint">Un nome per riga, oppure separati da virgola. I nomi gia presenti non vengono duplicati.</div>
+      <textarea id="bulkNames" placeholder="Rossi Marco&#10;Bianchi Luca&#10;Verdi Andrea"></textarea>
+      <div class="toolbar" style="margin-top:8px">
+        <button class="btn primary small" id="btnBulkAdd">Aggiungi tutti</button>
+        <button class="btn small" id="btnCopiaElenco">Copia elenco</button>
+        <span class="grow"></span>
+        <button class="btn small danger" id="btnSvuota">Svuota tutto</button>
+      </div>
+      <div class="hint" id="bulkResult"></div>
+    </details>
+    <details class="card">
+      <summary>Rosa di prova</summary>
+      <div class="hint">Carica 28 nomi inventati con le gerarchie gia compilate, per provare la app. Sostituisce la rosa attuale.</div>
+      <div class="toolbar" style="margin:0">
+        <button class="btn small" id="btnDemo">Carica rosa di prova</button>
+      </div>
+    </details>
+    <div class="toolbar">
+      <span class="count" id="rosaCount"></span>
+      <span class="grow"></span>
+      <span class="hint" style="margin:0">I ruoli si assegnano nel tab Gerarchie</span>
+    </div>
+    <div id="rosaList" class="grow-list"></div>
+  </section>
+
+  <!-- GERARCHIE -->
+  <section id="tab-gerarchie" hidden>
+    <div class="hint" style="margin-top:0">Per ogni ruolo scegli i giocatori in ordine di forza: il primo e il piu forte, poi il secondo e cosi via. Lo stesso giocatore puo stare in piu ruoli: in quel caso la app lo sposta dove serve in base a chi c'e quel giorno.</div>
+    <div class="toolbar">
+      <span class="count" id="gerCount"></span>
+      <span class="grow"></span>
+      <button class="btn small" id="btnPulisciGer">Svuota gerarchie</button>
+    </div>
+    <div id="gerList"></div>
+  </section>
+</main>
+
+<div class="bottombar" id="bottombar">
+  <div class="line">
+    <div class="seg" id="modeSeg">
+      <button data-mode="bal">Equilibrate</button>
+      <button data-mode="fw">Forte vs Debole</button>
+    </div>
+  </div>
+  <div class="line">
+    <div class="seg sm" id="nSeg">
+      <button data-n="2">2 squadre</button>
+      <button data-n="3">3 squadre</button>
+    </div>
+    <button class="btn primary" id="btnGenera">Genera</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ===================== RUOLI E MAGLIE ===================== */
+var ROLES = [
+  {k:"PSX", n:"Pilone SX",           s:"1",    sh:"Pil. SX"},
+  {k:"TAL", n:"Tallonatore",         s:"2",    sh:"Tallon."},
+  {k:"PDX", n:"Pilone DX",           s:"3",    sh:"Pil. DX"},
+  {k:"SEC", n:"Seconda linea",       s:"4/5",  sh:"2\u00aa linea"},
+  {k:"FLK", n:"Flanker",             s:"6/7",  sh:"Flanker"},
+  {k:"N8",  n:"Numero 8",            s:"8",    sh:"N. 8"},
+  {k:"MM",  n:"Mediano di mischia",  s:"9",    sh:"Mischia"},
+  {k:"MA",  n:"Mediano di apertura", s:"10",   sh:"Apertura"},
+  {k:"ALA", n:"Ala",                 s:"11/14",sh:"Ala"},
+  {k:"PC",  n:"Primo centro",        s:"12",   sh:"1\u00b0 centro"},
+  {k:"SC",  n:"Secondo centro",      s:"13",   sh:"2\u00b0 centro"},
+  {k:"EST", n:"Estremo",             s:"15",   sh:"Estremo"}
+];
+// disposizione in campo, dall'estremo alla prima linea come nelle grafiche TV
+var PITCH_ROWS = [[15],[14,13,12,11],[10,9],[7,8,6],[5,4],[3,2,1]];
+var ROLE_BY_K = {};
+ROLES.forEach(function(r){ ROLE_BY_K[r.k]=r; });
+// maglie in ordine: la formazione si riempie dall'1 al 15
+var SLOTS = [[1,"PSX"],[2,"TAL"],[3,"PDX"],[4,"SEC"],[5,"SEC"],[6,"FLK"],[7,"FLK"],[8,"N8"],
+             [9,"MM"],[10,"MA"],[11,"ALA"],[12,"PC"],[13,"SC"],[14,"ALA"],[15,"EST"]];
+/* Rosa di prova: nomi inventati, serve solo per provare la app.
+   Ogni lista e in ordine di forza. Chi compare in due liste e polivalente:
+   il suo ruolo principale e quello in cui e classificato meglio. */
+var DEMO = {
+  PSX:["Bergamini","Fontana","Rizzo"],
+  TAL:["Moretti","Cattaneo"],
+  PDX:["Colombo","Ferraris","Bergamini"],
+  SEC:["Gallo","Negri","Villa","Sartori","Rizzo","Zanetti"],
+  FLK:["Pozzi","Marchetti","Beretta","Lombardi","Villa"],
+  N8: ["Zanetti","Beretta","Pozzi"],
+  MM: ["Barbieri","Grassi","Caputo"],
+  MA: ["Vitali","Conti","Barbieri","Caputo"],
+  ALA:["Mazza","Salvi","Donati"],
+  PC: ["Riva","Rossetti","Conti","Vitali"],
+  SC: ["Ferri","Donati","Rossetti"],
+  EST:["Pellegrini","Mazza","Salvi"]
+};
+var TEAM_KEYS = ["A","B","C"];
+var TEAM_NAMES = {A:"Squadra A", B:"Squadra B", C:"Squadra C", X:"fuori formazione"};
+
+/* ===================== STATO ===================== */
+var LS = {players:"cmr_players_v3", ranks:"cmr_ranks_v3", pres:"cmr_pres_v3",
+          assign:"cmr_assign_v3", settings:"cmr_settings_v3",
+          dual:"cmr_dual_v3", subs:"cmr_subs2_v3", pos:"cmr_pos_v3"};
+function load(k,def){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } }
+function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+
+var players = load(LS.players, []);
+var ranks   = load(LS.ranks, {});     // { ruolo: [idGiocatore, ...] } ordinato dal piu forte
+var pres    = load(LS.pres, {});
+var assign  = load(LS.assign, {});    // { idGiocatore: "A"|"B"|"C"|"X" }   X = non incluso
+var dual    = load(LS.dual, {});      // { idGiocatore: "A"|"B"|"C" }  seconda squadra (doppio impiego)
+var subs    = load(LS.subs, {});      // { "A|3": idGiocatore }  chi sostituisce la maglia 3 di A
+var pos     = load(LS.pos, {});       // { idGiocatore: numeroDiMaglia }  posizione scelta a mano
+var settings= (function(){ var s=load(LS.settings,{});
+  return {mode:s.mode==="fw"?"fw":"bal", nTeams:s.nTeams===3?3:2}; })();
+var selectedId=null, searchQ="";
+
+ROLES.forEach(function(r){ if(!Array.isArray(ranks[r.k])) ranks[r.k]=[]; });
+
+/* ===================== DERIVATI ===================== */
+function playerById(id){ for(var i=0;i<players.length;i++) if(players[i].id===id) return players[i]; return null; }
+function rankIn(p,rk){ var i=(ranks[rk]||[]).indexOf(p.id); return i<0?0:i+1; }
+function rolesOf(p){
+  var out=[];
+  ROLES.forEach(function(r){ var k=rankIn(p,r.k); if(k) out.push({rk:r.k, rank:k}); });
+  out.sort(function(a,b){ return a.rank-b.rank; });
+  return out;
+}
+function hasRole(p){ return rolesOf(p).length>0; }
+function primary(p){ var r=rolesOf(p); return r.length?r[0].rk:null; }
+// chi non e in nessuna gerarchia vale uno peggio del piu debole classificato,
+// cosi non falsa le somme di forza
+function noRankValue(){
+  var m=1;
+  ROLES.forEach(function(r){ if(ranks[r.k].length>m) m=ranks[r.k].length; });
+  return m+1;
+}
+function prio(p){ var r=rolesOf(p); return r.length?r[0].rank:noRankValue(); }
+function strength(p){ return -prio(p); }
+function uid(){ return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function roleName(k){ return (k&&ROLE_BY_K[k])?ROLE_BY_K[k].n:"Senza ruolo"; }
+function norm(s){
+  return (s||"").toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim();
+}
+function activeTeams(){ return TEAM_KEYS.slice(0, settings.nTeams); }
+
+/* ===================== UI BASE ===================== */
+function $(sel){ return document.querySelector(sel); }
+function el(tag,cls,txt){ var e=document.createElement(tag); if(cls)e.className=cls; if(txt!==undefined)e.textContent=txt; return e; }
+var toastT=null;
+function toast(msg){ var t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastT);
+  toastT=setTimeout(function(){ t.classList.remove("show"); },2200); }
+
+var TABS=["presenze","formazioni","campo","giocatori","gerarchie"];
+function showTab(name){
+  var btns=document.querySelectorAll(".tabs button");
+  for(var i=0;i<btns.length;i++) btns[i].classList.toggle("active", btns[i].dataset.tab===name);
+  TABS.forEach(function(t){ $("#tab-"+t).hidden=(t!==name); });
+  $("#bottombar").style.display=(name==="presenze"||name==="formazioni"||name==="campo")?"block":"none";
+  if(name==="presenze") renderPres();
+  if(name==="formazioni") renderTeams();
+  if(name==="campo") renderCampo();
+  if(name==="giocatori") renderPlayers();
+  if(name==="gerarchie") renderGer();
+  window.scrollTo(0,0);
+}
+(function(){ var b=document.querySelectorAll(".tabs button");
+  for(var i=0;i<b.length;i++) b[i].addEventListener("click",(function(btn){ return function(){ showTab(btn.dataset.tab); }; })(b[i]));
+})();
+
+function renderSegs(){
+  var b=document.querySelectorAll("#modeSeg button");
+  for(var i=0;i<b.length;i++) b[i].classList.toggle("active", b[i].dataset.mode===settings.mode);
+  var c=document.querySelectorAll("#nSeg button");
+  for(var j=0;j<c.length;j++) c[j].classList.toggle("active", +c[j].dataset.n===settings.nTeams);
+}
+(function(){
+  var b=document.querySelectorAll("#modeSeg button");
+  for(var i=0;i<b.length;i++) b[i].addEventListener("click",(function(btn){ return function(){
+    settings.mode=btn.dataset.mode; save(LS.settings,settings); renderSegs(); }; })(b[i]));
+  var c=document.querySelectorAll("#nSeg button");
+  for(var j=0;j<c.length;j++) c[j].addEventListener("click",(function(btn){ return function(){
+    settings.nTeams=+btn.dataset.n; save(LS.settings,settings); renderSegs(); }; })(c[j]));
+})();
+
+function presentPlayers(){ return players.filter(function(p){ return pres[p.id]; }); }
+function updateHeader(){
+  var n=presentPlayers().length;
+  $("#hdrInfo").innerHTML = n ? "<b>"+n+"</b>presenti" : "";
+}
+
+/* ===================== PRESENZE ===================== */
+function renderPres(){
+  var wrap=$("#presList"); wrap.innerHTML="";
+  if(!players.length){
+    wrap.appendChild(el("div","empty-state","Nessun giocatore inserito. Vai nel tab Giocatori per creare la rosa, poi nel tab Gerarchie per definire i ruoli."));
+    $("#presCount").textContent=""; updateHeader(); return;
+  }
+  var q=norm(searchQ);
+  var list=players.filter(function(p){ return !q || norm(p.nome).indexOf(q)>=0; });
+  var groups=[], used={};
+  ROLES.forEach(function(r){
+    var g=list.filter(function(p){ return primary(p)===r.k; })
+              .sort(function(a,b){ return prio(a)-prio(b) || a.nome.localeCompare(b.nome); });
+    g.forEach(function(p){ used[p.id]=1; });
+    if(g.length) groups.push({n:r.n, players:g});
+  });
+  var none=list.filter(function(p){ return !used[p.id]; }).sort(function(a,b){ return a.nome.localeCompare(b.nome); });
+  if(none.length) groups.push({n:"Senza ruolo", players:none});
+
+  groups.forEach(function(g,gi){
+    wrap.appendChild(el("div","grouph"+(gi===0?" first":""), g.n));
+    g.players.forEach(function(p){
+      var row=el("div","prow"+(pres[p.id]?" on":""));
+      row.appendChild(el("div","chk", pres[p.id]?"\u2713":""));
+      row.appendChild(el("div","nm",p.nome));
+      var meta=el("div","meta");
+      var rs=rolesOf(p);
+      if(rs.length>1) meta.appendChild(el("div",null, rs.slice(1).map(function(x){ return roleName(x.rk)+" #"+x.rank; }).join(", ")));
+      meta.appendChild(el("span","rank"+(rs.length?(rs[0].rank===1?" r1":""):" none"), rs.length?("#"+rs[0].rank):"--"));
+      row.appendChild(meta);
+      row.addEventListener("click",function(){
+        if(pres[p.id]) delete pres[p.id]; else pres[p.id]=1;
+        save(LS.pres,pres); renderPres();
+      });
+      wrap.appendChild(row);
+    });
+  });
+  $("#presCount").textContent=presentPlayers().length+" / "+players.length+" presenti";
+  updateHeader();
+}
+$("#searchPres").addEventListener("input",function(e){ searchQ=e.target.value; renderPres(); });
+$("#btnTutti").addEventListener("click",function(){ players.forEach(function(p){ pres[p.id]=1; }); save(LS.pres,pres); renderPres(); });
+$("#btnNessuno").addEventListener("click",function(){ pres={}; save(LS.pres,pres); renderPres(); });
+$("#btnIncolla").addEventListener("click",function(){ $("#pasteBox").hidden=!$("#pasteBox").hidden; });
+$("#btnChiudiIncolla").addEventListener("click",function(){ $("#pasteBox").hidden=true; });
+$("#btnApplicaIncolla").addEventListener("click",function(){
+  var tokens=$("#pasteText").value.split(/[\n,;]+/).map(norm).filter(Boolean);
+  var notFound=[], found=0;
+  tokens.forEach(function(t){ var m=matchPlayer(t); if(m){ pres[m.id]=1; found++; } else notFound.push(t); });
+  save(LS.pres,pres); renderPres();
+  $("#pasteResult").textContent=found+" riconosciuti"+(notFound.length?" \u00b7 non trovati: "+notFound.join(", "):"");
+});
+function matchPlayer(t){
+  function only(arr){ return arr.length===1?arr[0]:null; }
+  var r=only(players.filter(function(p){ return norm(p.nome)===t; })); if(r) return r;
+  r=only(players.filter(function(p){ return norm(p.nome).indexOf(t)>=0; })); if(r) return r;
+  r=only(players.filter(function(p){ return t.indexOf(norm(p.nome))>=0; })); if(r) return r;
+  var tw=t.split(" ").filter(function(w){ return w.length>=3; });
+  r=only(players.filter(function(p){ return norm(p.nome).split(" ").some(function(w){ return tw.indexOf(w)>=0; }); })); if(r) return r;
+  r=only(players.filter(function(p){ var nw=norm(p.nome).split(" ");
+      return tw.length && tw.every(function(w){ return nw.indexOf(w)>=0; }); })); if(r) return r;
+  return null;
+}
+
+/* ===================== DIVISIONE IN SQUADRE ===================== */
+function genera(){
+  var present=presentPlayers();
+  var teams=activeTeams();
+  if(present.length<teams.length*2){ toast("Troppi pochi presenti per "+teams.length+" squadre"); return false; }
+
+  var mode=settings.mode, na={};
+  var free=present.slice();
+
+  // una squadra non puo superare i 15: chi avanza resta fuori formazione
+  var cap=teams.length*15 - present.filter(function(p){ return teams.indexOf(na[p.id])>=0; }).length;
+  if(free.length>cap){
+    free.sort(function(a,b){ return strength(b)-strength(a); });
+    free.slice(cap).forEach(function(p){ na[p.id]="X"; });
+    free=free.slice(0,cap);
+  }
+
+  var team={}; teams.forEach(function(t){ team[t]=[]; });
+  present.forEach(function(p){ if(team[na[p.id]]) team[na[p.id]].push(p); });
+
+  function sum(t){ return team[t].reduce(function(s,p){ return s+strength(p); },0); }
+  function weakest(){
+    var best=null;
+    teams.forEach(function(t){
+      var v=sum(t), n=team[t].length;
+      if(!best || v<best.v || (v===best.v && n<best.n)) best={t:t, v:v, n:n};
+    });
+    return best.t;
+  }
+  function roleCount(t,rk){ return team[t].filter(function(p){ return primary(p)===rk; }).length; }
+
+  // distribuzione ruolo per ruolo, dal piu forte al piu debole
+  var roleKeys=ROLES.map(function(r){ return r.k; }).concat([null]);
+  roleKeys.forEach(function(rk){
+    var grp=free.filter(function(p){ return rk===null ? !hasRole(p) : primary(p)===rk; })
+                .sort(function(a,b){ return strength(b)-strength(a); });
+    if(!grp.length) return;
+    if(mode==="bal"){
+      // a serpentina partendo dalla squadra piu debole: tutte coprono il ruolo
+      grp.forEach(function(p){ var t=weakest(); team[t].push(p); na[p.id]=t; });
+    }else{
+      if(rk===null){
+        // senza ruolo: tutti nella squadra piu debole, non nella forte
+        var last=teams[teams.length-1];
+        grp.forEach(function(p){ team[last].push(p); na[p.id]=last; });
+      }else{
+        // i migliori nella squadra A, poi B, poi C
+        var per=Math.ceil(grp.length/teams.length), ti=0, cnt=0;
+        grp.forEach(function(p){
+          if(cnt>=per && ti<teams.length-1){ ti++; cnt=0; }
+          var t=teams[ti]; team[t].push(p); na[p.id]=t; cnt++;
+        });
+      }
+    }
+  });
+
+  function isFree(){ return true; }
+  function biggest(){ var t=teams[0]; teams.forEach(function(x){ if(team[x].length>team[t].length) t=x; }); return t; }
+  function smallest(){ var t=teams[0]; teams.forEach(function(x){ if(team[x].length<team[t].length) t=x; }); return t; }
+  // pareggia i numeri: sposta chi ha un ruolo doppione verso la squadra che ne e scoperta
+  var guard=0;
+  while(team[biggest()].length-team[smallest()].length>1 && guard++<120){
+    var big=biggest(), small=smallest();
+    var cands=team[big].filter(isFree); if(!cands.length) break;
+    var gain=function(p){ return roleCount(big,primary(p))-roleCount(small,primary(p)); };
+    var maxGain=Math.max.apply(null,cands.map(gain));
+    cands=cands.filter(function(p){ return gain(p)===maxGain; });
+    var pick;
+    if(mode==="bal"){
+      var d0=sum(big)-sum(small), best=null;
+      cands.forEach(function(p){
+        var d=Math.abs((sum(big)-strength(p))-(sum(small)+strength(p)));
+        if(!best||d<best.d) best={p:p,d:d};
+      });
+      pick=best.p;
+    }else{
+      cands.sort(function(a,b){ return strength(a)-strength(b); });
+      // dalla squadra piu forte esce il piu debole, dalle altre il piu forte
+      pick = teams.indexOf(big)<teams.indexOf(small) ? cands[0] : cands[cands.length-1];
+    }
+    team[big]=team[big].filter(function(p){ return p!==pick; });
+    team[small].push(pick); na[pick.id]=small;
+  }
+
+  // equilibrate: scambi nello stesso ruolo finche riducono il divario
+  if(mode==="bal"){
+    var improved=true; guard=0;
+    while(improved && guard++<200){
+      improved=false;
+      var spread=function(){ var v=teams.map(sum); return Math.max.apply(null,v)-Math.min.apply(null,v); };
+      var cur=spread(), best=null;
+      for(var i=0;i<teams.length;i++) for(var j=i+1;j<teams.length;j++){
+        var t1=teams[i], t2=teams[j];
+        team[t1].filter(isFree).forEach(function(a){
+          team[t2].filter(isFree).forEach(function(b){
+            if(primary(a)!==primary(b)) return;
+            if(prio(a)===prio(b)) return;
+            team[t1]=team[t1].filter(function(x){ return x!==a; }).concat([b]);
+            team[t2]=team[t2].filter(function(x){ return x!==b; }).concat([a]);
+            var sp=spread();
+            team[t1]=team[t1].filter(function(x){ return x!==b; }).concat([a]);
+            team[t2]=team[t2].filter(function(x){ return x!==a; }).concat([b]);
+            if(sp<cur-1e-9 && (!best||sp<best.sp)) best={a:a,b:b,t1:t1,t2:t2,sp:sp};
+          });
+        });
+      }
+      if(best){
+        team[best.t1]=team[best.t1].filter(function(x){ return x!==best.a; }).concat([best.b]);
+        team[best.t2]=team[best.t2].filter(function(x){ return x!==best.b; }).concat([best.a]);
+        na[best.a.id]=best.t2; na[best.b.id]=best.t1; improved=true;
+      }
+    }
+  }
+
+  // forte vs debole: rinomina le squadre in ordine di forza,
+  // cosi A e sempre la piu forte e l'ultima la piu debole
+  if(mode==="fw"){
+    var arr=teams.map(function(t){
+      return {list:team[t], v:team[t].reduce(function(s,p){ return s+prio(p); },0)};
+    }).sort(function(a,b){ return a.v-b.v; });            // somma piu bassa = squadra piu forte
+    var reTeam={};
+    arr.forEach(function(x,i){
+      var label=teams[i];
+      reTeam[label]=x.list;
+      x.list.forEach(function(p){ na[p.id]=label; });
+    });
+    team=reTeam;
+  }
+
+  assign=na; dual={}; subs={}; pos={}; selectedId=null;
+  computeDual();
+  save(LS.assign,assign); save(LS.dual,dual); save(LS.subs,subs); save(LS.pos,pos);
+  return true;
+}
+
+/* Doppio impiego: solo con tre squadre, perche una riposa sempre e nessuno
+   deve giocare in due squadre contrapposte. Serve a pareggiare i numeri e a
+   coprire un ruolo chiave. Un solo doppio impiego per persona. */
+function computeDual(){
+  dual={};
+  var teams=activeTeams();
+  // con due squadre si gioca una contro l'altra, quindi nessuno puo stare in entrambe.
+  // con tre squadre una riposa sempre, quindi il doppio impiego e possibile.
+  if(teams.length<3) return;
+  var size={}, target=0;
+  teams.forEach(function(t){
+    size[t]=presentPlayers().filter(function(p){ return assign[p.id]===t; }).length;
+    if(size[t]>target) target=size[t];
+  });
+  if(target>15) target=15;
+  teams.forEach(function(t){
+    if(size[t]>=target) return;
+    var guard=0;
+    while(size[t]<target && guard++<20){
+      var holes=fillSlots(teamPlayers(t)).slots.filter(function(s){ return !s.p; });
+      var hole=holes[0];
+      var cands=presentPlayers().filter(function(p){
+        if(assign[p.id]===t || dual[p.id]) return false;      // un solo doppio impiego a testa
+        if(teams.indexOf(assign[p.id])<0) return false;        // solo chi e titolare altrove
+        if(!hole) return true;
+        return rolesOf(p).some(function(x){ return x.rk===hole.k; });
+      });
+      if(!cands.length && hole){
+        // nessuno copre quel ruolo: prendi chiunque sia disponibile
+        cands=presentPlayers().filter(function(p){
+          return assign[p.id]!==t && !dual[p.id] && teams.indexOf(assign[p.id])>=0;
+        });
+      }
+      if(!cands.length) break;
+      // preferisci chi nella sua squadra e di troppo, poi il piu forte nel ruolo scoperto
+      cands.sort(function(a,b){
+        var ea=fillSlots(teamPlayers(assign[a.id])).extra.indexOf(a)>=0?0:1;
+        var eb=fillSlots(teamPlayers(assign[b.id])).extra.indexOf(b)>=0?0:1;
+        if(ea!==eb) return ea-eb;
+        if(hole){
+          var ra=rankIn(a,hole.k)||99, rb=rankIn(b,hole.k)||99;
+          if(ra!==rb) return ra-rb;
+        }
+        return prio(a)-prio(b);
+      });
+      dual[cands[0].id]=t;
+      size[t]++;
+    }
+  });
+  // seconda fase: se una squadra schiera quasi un XV completo ma le manca un
+  // ruolo chiave (prima linea o mediani), prende in prestito un giocatore.
+  // Massimo tre prestiti per squadra, e solo per quei ruoli.
+  teams.forEach(function(t){
+    if(size[t]<10) return;
+    var extraDual=0;
+    KEY_ROLES.forEach(function(rk){
+      // un solo prestito per squadra, cosi i numeri restano allineati
+      if(extraDual>=1 || size[t]>=15) return;
+      var slots=fillSlots(teamPlayers(t)).slots;
+      var hole=slots.filter(function(s){ return !s.p && s.k===rk; })[0];
+      if(!hole) return;
+      var cands=presentPlayers().filter(function(p){
+        if(assign[p.id]===t || dual[p.id]) return false;
+        if(teams.indexOf(assign[p.id])<0) return false;
+        return rankIn(p,rk)>0;
+      });
+      if(!cands.length) return;
+      cands.sort(function(a,b){
+        var ea=fillSlots(teamPlayers(assign[a.id])).extra.indexOf(a)>=0?0:1;
+        var eb=fillSlots(teamPlayers(assign[b.id])).extra.indexOf(b)>=0?0:1;
+        if(ea!==eb) return ea-eb;
+        return rankIn(a,rk)-rankIn(b,rk);
+      });
+      dual[cands[0].id]=t; size[t]++; extraDual++;
+    });
+  });
+}
+
+/* ===================== FORMAZIONI ===================== */
+function teamPlayers(t){
+  return players.filter(function(p){ return pres[p.id] && (assign[p.id]===t || dual[p.id]===t); });
+}
+function sumPrio(list){ return list.reduce(function(s,p){ return s+prio(p); },0); }
+
+/* le formazioni si ricalcolano spesso: le teniamo in cache per ogni disegno */
+var lcache={};
+function clearCache(){ lcache={}; }
+function lineup(t){
+  if(!lcache[t]) lcache[t]=fillSlots(teamPlayers(t));
+  return lcache[t];
+}
+
+/* Assegna le maglie adattandosi a chi c'e:
+   1) ogni giocatore nel suo ruolo migliore, 2) i rimasti nei ruoli secondari,
+   3) chi resta fuori va negli slot ancora liberi come adattato. */
+function fillSlots(list){
+  var slots=SLOTS.map(function(x){ return {n:x[0], k:x[1], p:null, adapted:false}; });
+  var sorted=list.slice().sort(function(a,b){ return strength(b)-strength(a); });
+  var placed={};
+  function freeSlot(k){ for(var j=0;j<slots.length;j++) if(!slots[j].p && slots[j].k===k) return slots[j]; return null; }
+  // prima le maglie scelte a mano, che hanno la precedenza su tutto
+  sorted.forEach(function(p){
+    var n=pos[p.id];
+    if(!n) return;
+    var s=slots.filter(function(x){ return x.n===n; })[0];
+    if(s && !s.p){
+      s.p=p; placed[p.id]=1;
+      s.adapted=!rolesOf(p).some(function(x){ return x.rk===s.k; });
+    }
+  });
+  [0,1].forEach(function(pass){
+    sorted.forEach(function(p){
+      if(placed[p.id]) return;
+      var rs=rolesOf(p).map(function(x){ return x.rk; });
+      var cand = pass===0 ? rs.slice(0,1) : rs.slice(1);
+      for(var i=0;i<cand.length;i++){
+        var s=freeSlot(cand[i]);
+        if(s){ s.p=p; placed[p.id]=1; break; }
+      }
+    });
+  });
+  // riempi i buchi rimasti con chi e ancora senza maglia
+  var leftover=sorted.filter(function(p){ return !placed[p.id]; });
+  leftover.forEach(function(p){
+    var s=null;
+    for(var j=0;j<slots.length;j++) if(!slots[j].p){ s=slots[j]; break; }
+    if(s){ s.p=p; s.adapted=true; placed[p.id]=1; }
+  });
+  return {slots:slots, extra:sorted.filter(function(p){ return !placed[p.id]; })};
+}
+
+/* ---- cambi: per ogni maglia si puo indicare chi la rileva ---- */
+function subKey(t,n){ return t+"|"+n; }
+function subPlayer(t,n){
+  var id=subs[subKey(t,n)];
+  if(!id) return null;
+  var p=playerById(id);
+  if(!p || !pres[p.id]) return null;
+  return p;
+}
+/* candidati: panchina, non inclusi e giocatori delle altre squadre */
+function subCandidates(t,rk,starterId){
+  var teams=activeTeams();
+  return presentPlayers().filter(function(p){
+    if(p.id===starterId) return false;
+    if(shirtOf(p.id,t)) return false;              // ha gia una maglia in questa squadra
+    return true;
+  }).map(function(p){
+    var tt=teamOf(p.id);
+    var src = (!tt||tt==="X") ? "panchina"
+            : (tt===t ? "senza maglia" : (teams.length===3?("Sq. "+tt):("Squadra "+tt)));
+    return {p:p, src:src, fit:rk?(rankIn(p,rk)||0):0};
+  });
+}
+function reserveSelect(t,slot){
+  var starter=slot.p, rk=slot.k;
+  var cur=subPlayer(t,slot.n);
+  var sel=document.createElement("select");
+  sel.className="rsv"+(cur?" set":"");
+  var o0=document.createElement("option");
+  o0.value=""; o0.textContent="nessuno";
+  sel.appendChild(o0);
+  var cands=subCandidates(t,rk,starter?starter.id:null);
+  function grp(label,arr){
+    if(!arr.length) return;
+    var g=document.createElement("optgroup"); g.label=label;
+    arr.sort(function(a,b){
+      return (a.fit||99)-(b.fit||99) || a.p.nome.localeCompare(b.p.nome);
+    }).forEach(function(c){
+      var o=document.createElement("option");
+      o.value=c.p.id;
+      // il cambio scelto si vede nella colonna, che e stretta: solo il nome.
+      // gli altri portano anche la provenienza, utile quando scegli
+      if(cur&&cur.id===c.p.id){ o.textContent=c.p.nome; o.selected=true; }
+      else o.textContent=c.p.nome+" \u00b7 "+c.src;
+      g.appendChild(o);
+    });
+    sel.appendChild(g);
+  }
+  grp(rk?("Copre "+roleName(rk)):"Nel ruolo", cands.filter(function(c){ return c.fit; }));
+  grp("Altri", cands.filter(function(c){ return !c.fit; }));
+  sel.addEventListener("change",function(){
+    if(!sel.value) delete subs[subKey(t,slot.n)];
+    else subs[subKey(t,slot.n)]=sel.value;
+    save(LS.subs,subs); refreshViews();
+  });
+  sel.addEventListener("click",function(ev){ ev.stopPropagation(); });
+  return sel;
+}
+function reserveCell(t,slot){
+  var box=el("div","rsvbox");
+  box.appendChild(reserveSelect(t,slot));
+  return box;
+}
+
+function playerSlot(p,numLabel,roleLabel,opt){
+  opt=opt||{};
+  var cls="slot player";
+  if(opt.extra) cls+=" extra";
+  if(opt.adapted) cls+=" adapted";
+  if(dual[p.id]) cls+=" dual";
+  if(selectedId===p.id) cls+=" sel";
+  var s=el("div",cls);
+  s.appendChild(el("div","num",numLabel));
+  var body=el("div","body");
+  body.appendChild(el("div","role",roleLabel));
+  var nm=el("div","name",p.nome+(dual[p.id]?" \u21c4":"")+(opt.adapted?" *":""));
+  body.appendChild(nm);
+  s.appendChild(body);
+  if(opt.rsv) s.appendChild(reserveCell(opt.rsv.t,opt.rsv.slot));
+  s.addEventListener("click",function(){ onTapPlayer(p); });
+  return s;
+}
+
+function renderTeams(){
+  clearCache();
+  var wrap=$("#teamsWrap"); wrap.innerHTML=""; $("#bench").innerHTML=""; $("#legend").innerHTML="";
+  var present=presentPlayers(), teams=activeTeams();
+  if(!present.some(function(p){ return assign[p.id]; })){
+    wrap.appendChild(el("div","empty-state","Nessuna formazione. Segna i presenti, scegli modalita e numero di squadre in basso, poi premi Genera."));
+    $("#btnAnnullaSel").hidden=true; $("#selInfo").textContent=""; return;
+  }
+  var grid=el("div","teams"+(teams.length===3?" three":""));
+  var anyAdapted=false, anyDual=false;
+  teams.forEach(function(t){
+    var list=teamPlayers(t);
+    var box=el("div","team "+t);
+    var h=el("h2");
+    var title=el("span");
+    title.appendChild(document.createTextNode(teams.length===3?t:("Squadra "+t)));
+    title.appendChild(el("small",null,list.length+" gioc. \u00b7 \u03a3 "+sumPrio(list)));
+    h.appendChild(title);
+    if(selectedId && assign[selectedId]!==t){
+      var mv=el("button","mv","\u2190 qui");
+      mv.addEventListener("click",function(){ moveSelected(t); });
+      h.appendChild(mv);
+    }
+    box.appendChild(h);
+    // intestazione della colonna dei cambi
+    var hd=el("div","slothead");
+    hd.appendChild(el("div","sp"));
+    hd.appendChild(el("div","hd","Cambio"));
+    hd.appendChild(el("div","lkspace"));
+    box.appendChild(hd);
+    var fs=lineup(t);
+    // tutte e quindici le righe, anche quelle senza giocatore
+    fs.slots.forEach(function(s){
+      if(s.p){
+        if(s.adapted) anyAdapted=true;
+        if(dual[s.p.id]) anyDual=true;
+        box.appendChild(playerSlot(s.p,s.n,roleName(s.k),{adapted:s.adapted, rsv:{t:t, slot:s}}));
+      }else{
+        var e=el("div","slot empty"+(selectedId?" target":""));
+        e.appendChild(el("div","num",s.n));
+        var b=el("div","body");
+        b.appendChild(el("div","role",roleName(s.k)));
+        b.appendChild(el("div","name", selectedId?"metti qui":"\u2014 scoperto"));
+        e.appendChild(b);
+        e.appendChild(reserveCell(t,s));
+        // riga scoperta: se c'e un giocatore selezionato, toccarla lo schiera qui
+        e.addEventListener("click",(function(tt,num){ return function(){ placeSelected(tt,num); }; })(t,s.n));
+        box.appendChild(e);
+      }
+    });
+    fs.extra.forEach(function(p){ box.appendChild(playerSlot(p,"+",roleName(primary(p)),{extra:true})); });
+    grid.appendChild(box);
+  });
+  wrap.appendChild(grid);
+
+  var lg=$("#legend");
+  if(anyAdapted) lg.appendChild(el("span","lgy","giallo = fuori ruolo"));
+  if(anyDual) lg.appendChild(el("span",null,"\u21c4 = doppio impiego, gioca in due squadre"));
+
+  renderBench();
+  $("#btnAnnullaSel").hidden=!selectedId;
+  var sel=selectedId?playerById(selectedId):null;
+  $("#selInfo").textContent = sel ? "Selezionato: "+sel.nome : "";
+}
+
+/* ===================== VISTA CAMPO ===================== */
+function roleShort(k){ return (k&&ROLE_BY_K[k])?ROLE_BY_K[k].sh:"\u2014"; }
+
+function renderCampo(){
+  clearCache();
+  var wrap=$("#campoWrap"); wrap.innerHTML="";
+  var present=presentPlayers(), teams=activeTeams();
+  if(!present.some(function(p){ return assign[p.id]; })){
+    wrap.appendChild(el("div","empty-state","Nessuna formazione. Segna i presenti, scegli modalita e numero di squadre in basso, poi premi Genera."));
+    $("#btnAnnullaSel2").hidden=true; $("#selInfo2").textContent=""; return;
+  }
+  teams.forEach(function(t){
+    var list=teamPlayers(t), fs=lineup(t);
+    var byNum={};
+    fs.slots.forEach(function(s){ byNum[s.n]=s; });
+
+    var box=el("div","pitchbox "+t);
+    var h=el("h2");
+    h.appendChild(document.createTextNode(TEAM_NAMES[t]));
+    h.appendChild(el("small",null,list.length+" gioc. \u00b7 \u03a3 "+sumPrio(list)));
+    box.appendChild(h);
+
+    // i cambi stanno in una colonna a parte, col numero della maglia in cui entrano
+    var cambi=[];
+    fs.slots.forEach(function(s){
+      var r=subPlayer(t,s.n);
+      if(r) cambi.push({n:s.n, p:r});
+    });
+
+    var pitch=el("div","pitch");
+    var prow=el("div","pitchrow");
+    var main=el("div","pitchmain");
+    PITCH_ROWS.forEach(function(row){
+      var fr=el("div","frow"+(row.length>3?" wide":""));
+      row.forEach(function(num){
+        var s=byNum[num];
+        if(!s) return;
+        if(s.p){
+          var b=el("button","pchip"+(selectedId===s.p.id?" sel":""));
+          b.appendChild(el("div","n",String(num)));
+          var tx=el("div","tx");
+          tx.appendChild(el("div","nm",s.p.nome+(dual[s.p.id]?" \u21c4":"")+(s.adapted?" *":"")));
+          tx.appendChild(el("div","rl",roleShort(s.k)));
+          b.appendChild(tx);
+          b.addEventListener("click",(function(pl){ return function(){ onTapPlayer(pl); }; })(s.p));
+          fr.appendChild(b);
+        }else{
+          var v=el("button","pchip vacant"+(selectedId?" target":""));
+          v.appendChild(el("div","n",String(num)));
+          var tv=el("div","tx");
+          tv.appendChild(el("div","nm", selectedId?"metti qui":"mancante"));
+          tv.appendChild(el("div","rl",roleShort(s.k)));
+          v.appendChild(tv);
+          v.addEventListener("click",(function(tt,n){ return function(){ placeSelected(tt,n); }; })(t,num));
+          fr.appendChild(v);
+        }
+      });
+      main.appendChild(fr);
+    });
+    prow.appendChild(main);
+
+    if(cambi.length){
+      var col=el("div","subcol");
+      col.appendChild(el("div","subhead","Cambi"));
+      cambi.forEach(function(c){
+        var sb=el("button","pchip sub"+(selectedId===c.p.id?" sel":""));
+        sb.appendChild(el("div","n",String(c.n)));
+        var st=el("div","tx");
+        st.appendChild(el("div","nm",c.p.nome));
+        sb.appendChild(st);
+        sb.addEventListener("click",(function(pl){ return function(){ onTapPlayer(pl); }; })(c.p));
+        col.appendChild(sb);
+      });
+      prow.appendChild(col);
+    }
+    pitch.appendChild(prow);
+    box.appendChild(pitch);
+
+    // chi e in squadra ma senza maglia
+    if(fs.extra.length){
+      var f=el("div","pitchfoot");
+      f.appendChild(el("b",null,"Senza maglia: "));
+      f.appendChild(document.createTextNode(fs.extra.map(function(p){ return p.nome; }).join(", ")));
+      box.appendChild(f);
+    }
+    wrap.appendChild(box);
+  });
+
+  var out=present.filter(function(p){ return (!assign[p.id]||assign[p.id]==="X") && !dual[p.id]; });
+  if(out.length){
+    var o=el("div","pitchfoot");
+    o.style.borderRadius="12px"; o.style.border="1px solid var(--line)";
+    o.appendChild(el("b",null,"Non inclusi: "));
+    o.appendChild(document.createTextNode(out.map(function(p){ return p.nome; }).join(", ")));
+    wrap.appendChild(o);
+  }
+  $("#btnAnnullaSel2").hidden=!selectedId;
+  var sel=selectedId?playerById(selectedId):null;
+  $("#selInfo2").textContent = sel ? "Selezionato: "+sel.nome : "";
+}
+
+/* ridisegna la vista aperta, qualunque sia */
+function refreshViews(){
+  clearCache();
+  if(!$("#tab-formazioni").hidden) renderTeams();
+  if(!$("#tab-campo").hidden) renderCampo();
+}
+
+/* ===== presenti non inclusi + riserve per ruolo ===== */
+function renderBench(){
+  var bench=$("#bench");
+  var out=presentPlayers().filter(function(p){ return !assign[p.id] || assign[p.id]==="X"; })
+                          .filter(function(p){ return !dual[p.id]; })
+                          .sort(function(a,b){ return prio(a)-prio(b) || a.nome.localeCompare(b.nome); });
+  // il riquadro resta visibile quando c'e una selezione, cosi puoi escludere qualcuno
+  if(!out.length && !selectedId) return;
+
+  bench.appendChild(el("div","grouph","Presenti non inclusi ("+out.length+")"));
+  var box=el("div","team N");
+  var h=el("h2"); h.appendChild(el("span",null,"Fuori formazione"));
+  if(selectedId && assign[selectedId]!=="X"){
+    var mvx=el("button","mv","\u2190 qui");
+    mvx.addEventListener("click",function(){ moveSelected("X"); });
+    h.appendChild(mvx);
+  }
+  box.appendChild(h);
+  if(out.length) out.forEach(function(p){ box.appendChild(playerSlot(p,"\u00b7",roleName(primary(p)),{})); });
+  else{
+    var e=el("div","slot empty");
+    e.appendChild(el("div","num","\u00b7"));
+    var eb=el("div","body"); eb.appendChild(el("div","name","nessuno, tocca la freccia per escludere il selezionato"));
+    e.appendChild(eb); box.appendChild(e);
+  }
+  bench.appendChild(box);
+}
+
+/* in quale squadra vedo questo giocatore: la sua, o quella in cui gioca in prestito */
+function teamOf(id){ return dual[id] || assign[id]; }
+/* numero di maglia attuale dentro la squadra t, 0 se e in panchina interna */
+function shirtOf(id,t){
+  if(!t) return 0;
+  var fs=lineup(t);
+  for(var i=0;i<fs.slots.length;i++) if(fs.slots[i].p && fs.slots[i].p.id===id) return fs.slots[i].n;
+  return 0;
+}
+function onTapPlayer(p){
+  if(!selectedId){ selectedId=p.id; renderTeams(); return; }
+  if(selectedId===p.id){ selectedId=null; renderTeams(); return; }
+  var a=selectedId, b=p.id;
+  var ta=teamOf(a), tb=teamOf(b);
+
+  // stessa squadra: si scambiano le maglie, cioe le posizioni in campo
+  if(ta===tb){
+    if(ta==="X"){ selectedId=b; renderTeams(); return; }   // due esclusi: niente da scambiare
+    var sa=shirtOf(a,ta), sb=shirtOf(b,ta);
+    if(sa&&sb){ pos[a]=sb; pos[b]=sa; }
+    else if(sa){ pos[b]=sa; delete pos[a]; }               // b entra, a va in panchina interna
+    else if(sb){ pos[a]=sb; delete pos[b]; }
+    else{ selectedId=b; refreshViews(); return; }
+    save(LS.pos,pos); selectedId=null; refreshViews(); toast("Posizioni scambiate");
+    return;
+  }
+
+  // squadre diverse: si scambiano le squadre
+  var tmp=assign[a]; assign[a]=assign[b]; assign[b]=tmp;
+  delete dual[a]; delete dual[b];
+  delete pos[a]; delete pos[b];
+  save(LS.assign,assign); save(LS.dual,dual); save(LS.pos,pos);
+  selectedId=null; refreshViews(); toast("Giocatori scambiati di squadra");
+}
+/* mette il giocatore selezionato nella maglia num della squadra t.
+   Funziona anche se arriva da un'altra squadra o dalla panchina. */
+function placeSelected(t,num){
+  if(!selectedId){ toast("Prima tocca il giocatore da spostare"); return; }
+  var id=selectedId;
+  // libera la maglia da altre scelte manuali nella stessa squadra
+  teamPlayers(t).forEach(function(p){ if(p.id!==id && pos[p.id]===num) delete pos[p.id]; });
+  if(teamOf(id)!==t){ assign[id]=t; delete dual[id]; }
+  pos[id]=num;
+  save(LS.assign,assign); save(LS.dual,dual); save(LS.pos,pos);
+  selectedId=null; refreshViews();
+  toast(playerById(id).nome+" schierato con la maglia "+num);
+}
+function moveSelected(t){
+  if(!selectedId) return;
+  assign[selectedId]=t; delete dual[selectedId]; delete pos[selectedId];
+  save(LS.assign,assign); save(LS.dual,dual); save(LS.pos,pos);
+  selectedId=null; refreshViews(); toast("Spostato in "+TEAM_NAMES[t]);
+}
+$("#btnAnnullaSel").addEventListener("click",function(){ selectedId=null; refreshViews(); });
+$("#btnAnnullaSel2").addEventListener("click",function(){ selectedId=null; refreshViews(); });
+$("#btnRigenera2").addEventListener("click",function(){ if(genera()) renderCampo(); });
+$("#btnCondividi2").addEventListener("click",function(){ $("#btnCondividi").click(); });
+$("#btnRigenera").addEventListener("click",function(){ if(genera()) renderTeams(); });
+$("#btnGenera").addEventListener("click",function(){
+  if(!genera()) return;
+  // se stai guardando il campo resti sul campo, altrimenti vai alla lista
+  if(!$("#tab-campo").hidden) renderCampo(); else showTab("formazioni");
+});
+
+function formazioniText(){
+  clearCache();
+  var present=presentPlayers(), teams=activeTeams();
+  var modeTxt = settings.mode==="bal" ? "Squadre equilibrate" : "Forte vs Debole";
+  var out="CUS MILANO RUGBY \u2014 Allenamento "+new Date().toLocaleDateString("it-IT")+"\n"
+        + modeTxt+" \u00b7 "+teams.length+" squadre \u00b7 "+present.length+" presenti\n";
+  teams.forEach(function(t){
+    var list=teamPlayers(t);
+    out+="\n"+TEAM_NAMES[t].toUpperCase()+" ("+list.length+" gioc.)\n";
+    var fs=lineup(t);
+    fs.slots.forEach(function(s){
+      var rsv=subPlayer(t,s.n);
+      out+=s.n+" "+roleName(s.k)+": "+(s.p?s.p.nome:"\u2014 scoperto")
+         +(s.p&&dual[s.p.id]?" (doppio impiego)":"")
+         +(s.adapted?" (fuori ruolo)":"")
+         +(rsv?"  [cambio: "+rsv.nome+"]":"")+"\n";
+    });
+    if(fs.extra.length) out+="Senza maglia: "+fs.extra.map(function(p){ return p.nome; }).join(", ")+"\n";
+  });
+  var outp=present.filter(function(p){ return (!assign[p.id]||assign[p.id]==="X") && !dual[p.id]; });
+  if(outp.length) out+="\nNON INCLUSI: "+outp.map(function(p){ return p.nome; }).join(", ")+"\n";
+  return out;
+}
+function copyText(txt){
+  if(navigator.clipboard && navigator.clipboard.writeText)
+    navigator.clipboard.writeText(txt).then(function(){ toast("Copiato"); },function(){ fallbackCopy(txt); });
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){
+  var ta=document.createElement("textarea"); ta.value=txt;
+  ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand("copy"); toast("Copiato"); }catch(e){ toast("Copia non riuscita"); }
+  ta.parentNode.removeChild(ta);
+}
+$("#btnCopia").addEventListener("click",function(){ copyText(formazioniText()); });
+$("#btnCondividi").addEventListener("click",function(){
+  var txt=formazioniText();
+  if(navigator.share) navigator.share({title:"Formazioni CUS Milano Rugby", text:txt}).catch(function(){});
+  else copyText(txt);
+});
+
+/* ===================== GIOCATORI ===================== */
+function addPlayer(nome){
+  nome=(nome||"").trim();
+  if(!nome) return null;
+  if(players.filter(function(p){ return norm(p.nome)===norm(nome); })[0]) return null;
+  var p={id:uid(), nome:nome}; players.push(p); return p;
+}
+function renderPlayers(){
+  var wrap=$("#rosaList"); wrap.innerHTML="";
+  $("#rosaCount").textContent=players.length+" giocatori";
+  if(!players.length){
+    wrap.appendChild(el("div","empty-state","Aggiungi i giocatori uno per uno o incollali tutti insieme."));
+    return;
+  }
+  players.slice().sort(function(a,b){ return a.nome.localeCompare(b.nome); }).forEach(function(p){
+    var row=el("div","gr");
+    var nm=document.createElement("input"); nm.type="text"; nm.value=p.nome;
+    nm.addEventListener("change",function(){
+      var v=nm.value.trim();
+      if(!v){ nm.value=p.nome; return; }
+      p.nome=v; save(LS.players,players); renderPlayers();
+    });
+    row.appendChild(nm);
+    var rs=rolesOf(p);
+    row.appendChild(el("div","tag", rs.length
+      ? rs.map(function(x){ return roleName(x.rk)+" #"+x.rank; }).join(" \u00b7 ") : "senza ruolo"));
+    var del=el("button","btn small danger","\u2715");
+    del.addEventListener("click",function(){
+      if(!confirm("Eliminare "+p.nome+"?")) return;
+      players=players.filter(function(x){ return x!==p; });
+      ROLES.forEach(function(r){ ranks[r.k]=ranks[r.k].filter(function(id){ return id!==p.id; }); });
+      delete pres[p.id]; delete assign[p.id];
+      delete dual[p.id]; delete subs[p.id]; delete pos[p.id];
+      save(LS.players,players); save(LS.ranks,ranks); save(LS.pres,pres);
+      save(LS.assign,assign); save(LS.dual,dual);
+      save(LS.subs,subs); save(LS.pos,pos);
+      renderPlayers();
+    });
+    row.appendChild(del);
+    wrap.appendChild(row);
+  });
+}
+$("#btnAddPlayer").addEventListener("click",function(){
+  var inp=$("#newName"), p=addPlayer(inp.value);
+  if(!p){ toast(inp.value.trim()?"Giocatore gia presente":"Scrivi un nome"); return; }
+  save(LS.players,players); inp.value=""; inp.focus(); renderPlayers(); toast(p.nome+" aggiunto");
+});
+$("#newName").addEventListener("keydown",function(e){ if(e.key==="Enter") $("#btnAddPlayer").click(); });
+$("#btnBulkAdd").addEventListener("click",function(){
+  var names=$("#bulkNames").value.split(/[\n,;]+/).map(function(s){ return s.trim(); }).filter(Boolean);
+  var added=0, dup=0;
+  names.forEach(function(n){ if(addPlayer(n)) added++; else dup++; });
+  save(LS.players,players); $("#bulkNames").value="";
+  $("#bulkResult").textContent=added+" aggiunti"+(dup?" \u00b7 "+dup+" gia presenti o non validi":"");
+  renderPlayers();
+});
+$("#btnCopiaElenco").addEventListener("click",function(){ copyText(players.map(function(p){ return p.nome; }).join("\n")); });
+
+/* carica la rosa di prova con le sue gerarchie */
+function loadDemo(markPresent){
+  players=[]; ranks={}; ROLES.forEach(function(r){ ranks[r.k]=[]; });
+  pres={}; assign={}; dual={}; subs={}; pos={};
+  function getOrAdd(nome){
+    var ex=players.filter(function(p){ return norm(p.nome)===norm(nome); })[0];
+    if(ex) return ex;
+    var p={id:uid(), nome:nome}; players.push(p); return p;
+  }
+  ROLES.forEach(function(r){
+    (DEMO[r.k]||[]).forEach(function(nome){ ranks[r.k].push(getOrAdd(nome).id); });
+  });
+  if(markPresent) players.forEach(function(p){ pres[p.id]=1; });
+  save(LS.players,players); save(LS.ranks,ranks); save(LS.pres,pres);
+  save(LS.assign,assign); save(LS.dual,dual);
+  save(LS.subs,subs); save(LS.pos,pos);
+}
+$("#btnDemo").addEventListener("click",function(){
+  if(players.length && !confirm("Sostituire la rosa attuale con quella di prova?")) return;
+  loadDemo(true); renderPlayers(); renderGer();
+  toast(players.length+" giocatori di prova caricati e segnati presenti");
+});
+$("#btnSvuota").addEventListener("click",function(){
+  if(!confirm("Cancellare giocatori, gerarchie e presenze? Operazione irreversibile.")) return;
+  players=[]; ranks={}; ROLES.forEach(function(r){ ranks[r.k]=[]; });
+  pres={}; assign={}; dual={}; subs={}; pos={};
+  save(LS.players,players); save(LS.ranks,ranks); save(LS.pres,pres);
+  save(LS.assign,assign); save(LS.dual,dual);
+  save(LS.subs,subs); save(LS.pos,pos);
+  renderPlayers(); toast("Tutto cancellato");
+});
+
+/* ===================== GERARCHIE ===================== */
+var ORD=["1\u00b0","2\u00b0","3\u00b0","4\u00b0","5\u00b0","6\u00b0","7\u00b0","8\u00b0","9\u00b0","10\u00b0","11\u00b0","12\u00b0"];
+function ordLabel(i){ return i<ORD.length?ORD[i]:(i+1)+"\u00b0"; }
+
+function renderGer(){
+  var wrap=$("#gerList"); wrap.innerHTML="";
+  if(!players.length){
+    wrap.appendChild(el("div","empty-state","Prima inserisci i giocatori nel tab Giocatori, poi torna qui per ordinarli ruolo per ruolo."));
+    $("#gerCount").textContent=""; return;
+  }
+  var ranked={};
+  ROLES.forEach(function(r){ ranks[r.k].forEach(function(id){ ranked[id]=1; }); });
+  var missing=players.filter(function(p){ return !ranked[p.id]; });
+  if(missing.length){
+    wrap.appendChild(el("div","warn","Senza ruolo ("+missing.length+"): "+
+      missing.map(function(p){ return p.nome; }).join(", ")+
+      ". Finche non entrano in una gerarchia valgono come i piu deboli e vengono schierati solo per riempire i buchi."));
+  }
+  var sortedPlayers=players.slice().sort(function(a,b){ return a.nome.localeCompare(b.nome); });
+
+  ROLES.forEach(function(r){
+    var list=ranks[r.k];
+    var card=el("div","rolecard");
+    var h=el("h3");
+    h.appendChild(el("div","shirt",r.s));
+    h.appendChild(el("div","n",r.n));
+    h.appendChild(el("div","cnt", list.length?list.length+" in lista":"vuoto"));
+    card.appendChild(h);
+
+    list.forEach(function(pid,idx){
+      var row=el("div","pick");
+      row.appendChild(el("div","lbl"+(idx===0?" g":""), ordLabel(idx)));
+      var sel=document.createElement("select");
+      var o0=document.createElement("option"); o0.value=""; o0.textContent="\u2014 rimuovi \u2014"; sel.appendChild(o0);
+      sortedPlayers.forEach(function(p){
+        var at=list.indexOf(p.id);
+        if(at>=0 && at!==idx) return;
+        var o=document.createElement("option"); o.value=p.id; o.textContent=p.nome;
+        if(p.id===pid) o.selected=true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener("change",function(){
+        if(!sel.value) list.splice(idx,1); else list[idx]=sel.value;
+        save(LS.ranks,ranks); renderGer();
+      });
+      row.appendChild(sel);
+      var up=el("button","ic","\u2191"); up.disabled=(idx===0);
+      up.addEventListener("click",function(){
+        var t=list[idx-1]; list[idx-1]=list[idx]; list[idx]=t; save(LS.ranks,ranks); renderGer();
+      });
+      var dn=el("button","ic","\u2193"); dn.disabled=(idx===list.length-1);
+      dn.addEventListener("click",function(){
+        var t=list[idx+1]; list[idx+1]=list[idx]; list[idx]=t; save(LS.ranks,ranks); renderGer();
+      });
+      var del=el("button","ic del","\u2715");
+      del.addEventListener("click",function(){ list.splice(idx,1); save(LS.ranks,ranks); renderGer(); });
+      row.appendChild(up); row.appendChild(dn); row.appendChild(del);
+      card.appendChild(row);
+    });
+
+    var free=sortedPlayers.filter(function(p){ return list.indexOf(p.id)<0; });
+    if(free.length){
+      var row2=el("div","pick");
+      row2.appendChild(el("div","lbl", ordLabel(list.length)));
+      var sel2=document.createElement("select");
+      var p0=document.createElement("option"); p0.value=""; p0.textContent="+ aggiungi giocatore"; sel2.appendChild(p0);
+      free.forEach(function(p){
+        var o=document.createElement("option"); o.value=p.id;
+        var rs=rolesOf(p);
+        o.textContent=p.nome+(rs.length?"  ("+roleName(rs[0].rk)+" #"+rs[0].rank+")":"");
+        sel2.appendChild(o);
+      });
+      sel2.addEventListener("change",function(){
+        if(!sel2.value) return;
+        list.push(sel2.value); save(LS.ranks,ranks); renderGer();
+      });
+      row2.appendChild(sel2);
+      card.appendChild(row2);
+    }
+    wrap.appendChild(card);
+  });
+
+  var tot=0, poly=0;
+  ROLES.forEach(function(r){ tot+=ranks[r.k].length; });
+  players.forEach(function(p){ if(rolesOf(p).length>1) poly++; });
+  $("#gerCount").textContent=(players.length-missing.length)+"/"+players.length+" con ruolo \u00b7 "+poly+" polivalenti \u00b7 "+tot+" posizioni";
+}
+$("#btnPulisciGer").addEventListener("click",function(){
+  if(!confirm("Svuotare tutte le gerarchie? I giocatori restano, perdono solo ruoli e ordine.")) return;
+  ROLES.forEach(function(r){ ranks[r.k]=[]; });
+  save(LS.ranks,ranks); renderGer(); toast("Gerarchie svuotate");
+});
+
+/* ===================== AVVIO ===================== */
+// al primo avvio carica la rosa di prova, una volta sola:
+// se poi la svuoti o la sostituisci, non torna piu
+if(!players.length && !localStorage.getItem("cmr_seed_v3")){
+  try{ localStorage.setItem("cmr_seed_v3","1"); }catch(e){}
+  loadDemo(true);
+}
+renderSegs();
+showTab(players.length ? "presenze" : "giocatori");
+})();
+</script>
+</body>
+</html>

@@ -281,7 +281,6 @@
   <!-- CAMPO -->
   <section id="tab-campo" hidden>
     <div class="toolbar">
-      <button class="btn small" id="btnRigenera2">&#8635; Rigenera</button>
       <button class="btn small" id="btnCondividi2">Condividi</button>
       <span class="grow"></span>
       <button class="btn small danger" id="btnAnnullaSel2" hidden>Annulla</button>
@@ -837,6 +836,26 @@ function fillSlots(list){
 }
 
 /* ---- cambi: per ogni maglia si puo indicare chi la rileva ---- */
+/* chi e stato designato come cambio da qualche parte */
+function subIds(){
+  var ids={};
+  activeTeams().forEach(function(t){
+    lineup(t).slots.forEach(function(s){
+      var r=subPlayer(t,s.n);
+      if(r) ids[r.id]=1;
+    });
+  });
+  return ids;
+}
+/* presenti che non giocano e non sono nemmeno designati come cambio */
+function notIncluded(){
+  var sids=subIds();
+  return presentPlayers().filter(function(p){
+    if(dual[p.id]) return false;                       // gioca anche in un'altra squadra
+    if(sids[p.id]) return false;                       // e un cambio, quindi e previsto
+    return !assign[p.id] || assign[p.id]==="X";
+  }).sort(function(a,b){ return prio(a)-prio(b) || a.nome.localeCompare(b.nome); });
+}
 function subKey(t,n){ return t+"|"+n; }
 function subPlayer(t,n){
   var id=subs[subKey(t,n)];
@@ -845,17 +864,20 @@ function subPlayer(t,n){
   if(!p || !pres[p.id]) return null;
   return p;
 }
-/* candidati: panchina, non inclusi e giocatori delle altre squadre */
+/* candidati: chiunque sia presente tranne il titolare della riga stessa.
+   Quindi anche un compagno gia in campo, utile per spostarlo su quella maglia. */
 function subCandidates(t,rk,starterId){
   var teams=activeTeams();
   return presentPlayers().filter(function(p){
-    if(p.id===starterId) return false;
-    if(shirtOf(p.id,t)) return false;              // ha gia una maglia in questa squadra
-    return true;
+    return p.id!==starterId;
   }).map(function(p){
-    var tt=teamOf(p.id);
-    var src = (!tt||tt==="X") ? "panchina"
-            : (tt===t ? "senza maglia" : (teams.length===3?("Sq. "+tt):("Squadra "+tt)));
+    var sh=shirtOf(p.id,t), src;
+    if(sh) src="in campo "+sh;                     // gia schierato in questa squadra
+    else{
+      var tt=teamOf(p.id);
+      src = (!tt||tt==="X") ? "panchina"
+          : (tt===t ? "senza maglia" : (teams.length===3?("Sq. "+tt):("Squadra "+tt)));
+    }
     return {p:p, src:src, fit:rk?(rankIn(p,rk)||0):0};
   });
 }
@@ -1002,7 +1024,6 @@ function renderCampo(){
     var box=el("div","pitchbox "+t);
     var h=el("h2");
     h.appendChild(document.createTextNode(TEAM_NAMES[t]));
-    h.appendChild(el("small",null,list.length+" gioc. \u00b7 \u03a3 "+sumPrio(list)));
     box.appendChild(h);
 
     // i cambi stanno in una colonna a parte, col numero della maglia in cui entrano
@@ -1069,7 +1090,7 @@ function renderCampo(){
     wrap.appendChild(box);
   });
 
-  var out=present.filter(function(p){ return (!assign[p.id]||assign[p.id]==="X") && !dual[p.id]; });
+  var out=notIncluded();
   if(out.length){
     var o=el("div","pitchfoot");
     o.style.borderRadius="12px"; o.style.border="1px solid var(--line)";
@@ -1092,9 +1113,7 @@ function refreshViews(){
 /* ===== presenti non inclusi + riserve per ruolo ===== */
 function renderBench(){
   var bench=$("#bench");
-  var out=presentPlayers().filter(function(p){ return !assign[p.id] || assign[p.id]==="X"; })
-                          .filter(function(p){ return !dual[p.id]; })
-                          .sort(function(a,b){ return prio(a)-prio(b) || a.nome.localeCompare(b.nome); });
+  var out=notIncluded();
   // il riquadro resta visibile quando c'e una selezione, cosi puoi escludere qualcuno
   if(!out.length && !selectedId) return;
 
@@ -1172,7 +1191,6 @@ function moveSelected(t){
 }
 $("#btnAnnullaSel").addEventListener("click",function(){ selectedId=null; refreshViews(); });
 $("#btnAnnullaSel2").addEventListener("click",function(){ selectedId=null; refreshViews(); });
-$("#btnRigenera2").addEventListener("click",function(){ if(genera()) renderCampo(); });
 $("#btnCondividi2").addEventListener("click",function(){ $("#btnCondividi").click(); });
 $("#btnRigenera").addEventListener("click",function(){ if(genera()) renderTeams(); });
 $("#btnGenera").addEventListener("click",function(){
@@ -1200,7 +1218,7 @@ function formazioniText(){
     });
     if(fs.extra.length) out+="Senza maglia: "+fs.extra.map(function(p){ return p.nome; }).join(", ")+"\n";
   });
-  var outp=present.filter(function(p){ return (!assign[p.id]||assign[p.id]==="X") && !dual[p.id]; });
+  var outp=notIncluded();
   if(outp.length) out+="\nNON INCLUSI: "+outp.map(function(p){ return p.nome; }).join(", ")+"\n";
   return out;
 }
